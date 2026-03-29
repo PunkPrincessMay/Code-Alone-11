@@ -1,3 +1,6 @@
+// Name: Katie Summers;
+// Description: Star Wars themed chat, app handler;
+
 // Star Wars–themed chat data
 const chatData = {
   general: [
@@ -59,3 +62,58 @@ const chatData = {
     },
   ],
 };
+
+// Set up variables;
+let selectedChannel = "general";
+let channelButtons = document.querySelectorAll(".channel");
+
+// Handles switching the active channel;
+function changeChannel(e){
+  let selectedChannel = e.currentTarget;
+  let runningChannel = selectedChannel.dataset.channel;
+  if(document.querySelector(".channel.active")){
+    document.querySelector(".channel.active").classList.remove("active");
+  }
+  selectedChannel.classList.add("active");
+  selectedChannel = runningChannel;
+  populateMessages(selectedChannel);
+  
+};
+
+// Populates the chat messages based on the selected channel;
+function populateMessages(channel) {
+  let chatContainer = document.getElementById("chat-messages");
+  chatContainer.innerHTML = "";
+  let messageSet = chatData[channel];
+
+    messageSet.forEach((msg) => {
+        const clone = template.content.cloneNode(true);
+
+        const message = clone.querySelector(".message");
+        const sender = clone.querySelector(".sender");
+        const text = clone.querySelector(".text");
+
+        sender.textContent = msg.sender + ":";
+        text.textContent = msg.text;
+
+        if (msg.fromSelf) {
+            message.classList.add("self");
+            sender.textContent = "You:";
+        }
+
+        chatContainer.appendChild(clone);
+    });
+
+    // Clear input if it exists
+    let input = document.querySelector("#message-input");
+    if (input) input.value = "";
+}
+
+// Set up event listeners for channel buttons;
+function initializeEventListeners(){
+  channelButtons.forEach((button) => {
+    button.addEventListener("click", changeChannel);
+  });
+};
+
+populateMessages(selectedChannel);
