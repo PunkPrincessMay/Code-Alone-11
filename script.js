@@ -82,6 +82,7 @@ function changeChannel(e){
 
 // Populates the chat messages based on the selected channel;
 function populateMessages(channel) {
+  let template = document.querySelector("template");
   let chatContainer = document.getElementById("chat-messages");
   chatContainer.innerHTML = "";
   let messageSet = chatData[channel];
@@ -110,10 +111,22 @@ function populateMessages(channel) {
 }
 
 // Set up event listeners for channel buttons;
-function initializeEventListeners(){
-  channelButtons.forEach((button) => {
-    button.addEventListener("click", changeChannel);
-  });
-};
-
+document.querySelectorAll(".channel").forEach((button) => {
+  button.addEventListener("click", changeChannel);
+});
 populateMessages(selectedChannel);
+
+// Handle sending new messages;
+function sendMessage() {
+  let userInput = document.querySelector("#message-input");
+  let input = userInput.value.trim();
+  if (input) {
+    chatData[selectedChannel].push({
+      sender: "You",
+      text: input,
+      fromSelf: true,
+    });
+    populateMessages(selectedChannel);
+  }
+}
+document.querySelector(".chat-input>button").addEventListener("click", sendMessage);
